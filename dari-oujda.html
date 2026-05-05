@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DARI — Logement Étudiant</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#185FA5;--blue-light:#378ADD;--blue-dark:#0C447C;--blue-pale:#E6F1FB;
+  --teal:#1D9E75;--teal-light:#5DCAA5;--teal-pale:#E1F5EE;
+  --coral:#D85A30;--coral-pale:#FAECE7;
+  --gray:#888780;--gray-light:#F1EFE8;
+  --text:#1a1a1a;--text-muted:#666;--border:#e0ddd6;
+  --white:#fff;--bg:#f8f7f4;
+}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);min-height:100vh}
+
+/* NAV */
+nav{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;padding:0 2rem}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--blue-dark);text-decoration:none}
+.logo span{color:var(--blue-light)}
+.nav-tabs{display:flex;gap:4px}
+.tab-btn{padding:8px 18px;border-radius:30px;border:none;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s}
+.tab-btn.student{background:var(--blue-pale);color:var(--blue-dark)}
+.tab-btn.student.active{background:var(--blue-dark);color:var(--white)}
+.tab-btn.landlord{background:var(--teal-pale);color:#085041}
+.tab-btn.landlord.active{background:var(--teal);color:var(--white)}
+.nav-cta{background:var(--blue-light);color:var(--white);border:none;border-radius:30px;padding:8px 20px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:background .2s}
+.nav-cta:hover{background:var(--blue-dark)}
+
+/* PAGES */
+.page{display:none}
+.page.active{display:block}
+
+/* HERO STUDENT */
+.hero-student{background:linear-gradient(135deg,var(--blue-dark) 0%,var(--blue) 55%,var(--blue-light) 100%);padding:4rem 2rem 5rem;text-align:center;position:relative;overflow:hidden}
+.hero-student::before{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,0.04)}
+.hero-student::after{content:'';position:absolute;bottom:-80px;left:-30px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,0.04)}
+.hero-tag{display:inline-block;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);font-size:12px;font-weight:500;padding:5px 14px;border-radius:20px;margin-bottom:1.25rem;letter-spacing:.5px}
+.hero-title{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,46px);font-weight:800;color:#fff;line-height:1.1;margin-bottom:1rem}
+.hero-title em{color:#85B7EB;font-style:normal}
+.hero-sub{color:rgba(255,255,255,0.8);font-size:16px;margin-bottom:2rem;max-width:520px;margin-left:auto;margin-right:auto;line-height:1.65}
+.search-box{background:var(--white);border-radius:50px;padding:6px 6px 6px 20px;display:flex;align-items:center;gap:8px;max-width:540px;margin:0 auto 2rem;box-shadow:0 10px 30px rgba(0,0,0,0.2)}
+.search-box input{border:none;outline:none;flex:1;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);background:transparent}
+.search-box select{border:none;outline:none;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text-muted);background:transparent;cursor:pointer;padding-right:4px}
+.search-box button{background:var(--blue-dark);color:var(--white);border:none;border-radius:40px;padding:10px 22px;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:background .2s}
+.search-box button:hover{background:var(--blue-light)}
+.hero-stats{display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap}
+.stat{text-align:center}
+.stat-n{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#fff}
+.stat-l{font-size:12px;color:rgba(255,255,255,0.65);margin-top:2px}
+
+/* HERO LANDLORD */
+.hero-landlord{background:linear-gradient(135deg,#04342C 0%,var(--teal) 60%,var(--teal-light) 100%);padding:4rem 2rem 5rem;text-align:center;position:relative;overflow:hidden}
+.hero-landlord::before{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,0.04)}
+
+/* MAIN CONTENT */
+.container{max-width:1100px;margin:0 auto;padding:0 2rem}
+.section{padding:3rem 0}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+.section-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:700}
+.link-more{font-size:13px;color:var(--blue-light);font-weight:500;cursor:pointer;text-decoration:none;background:none;border:none;font-family:'DM Sans',sans-serif}
+
+/* FILTERS */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}
+.f-btn{padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--text-muted);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;transition:all .2s}
+.f-btn:hover,.f-btn.active{background:var(--blue-dark);color:var(--white);border-color:var(--blue-dark)}
+
+/* CARDS GRID */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
+.card{background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.08)}
+.card-img{height:160px;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative}
+.img-blue{background:linear-gradient(135deg,#B5D4F4,#85B7EB)}
+.img-teal{background:linear-gradient(135deg,#9FE1CB,#5DCAA5)}
+.img-coral{background:linear-gradient(135deg,#F5C4B3,#F0997B)}
+.img-amber{background:linear-gradient(135deg,#FAC775,#EF9F27)}
+.badge{position:absolute;top:12px;left:12px;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px}
+.badge-blue{background:var(--blue-dark);color:#fff}
+.badge-coral{background:var(--coral);color:#fff}
+.badge-teal{background:var(--teal);color:#fff}
+.badge-new{background:#fff;color:var(--blue-dark);border:1px solid var(--blue-light)}
+.badge-fav{position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.9);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer}
+.card-body{padding:1.1rem}
+.card-type{font-size:11px;font-weight:600;color:var(--blue-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.card-name{font-weight:600;font-size:15px;margin-bottom:4px;line-height:1.3}
+.card-loc{font-size:12px;color:var(--text-muted);margin-bottom:10px;display:flex;align-items:center;gap:4px}
+.card-price{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--blue-dark)}
+.card-price small{font-size:12px;font-weight:400;color:var(--text-muted);font-family:'DM Sans',sans-serif}
+.card-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
+.tag{font-size:11px;padding:3px 8px;border-radius:12px;background:var(--gray-light);color:var(--text-muted)}
+.card-footer{border-top:1px solid var(--border);padding:.75rem 1.1rem;display:flex;justify-content:space-between;align-items:center}
+.btn-contact{background:var(--blue-dark);color:#fff;border:none;border-radius:20px;padding:7px 16px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s}
+.btn-contact:hover{background:var(--blue-light)}
+.rating{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:4px}
+
+/* AVANTAGES */
+.av-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
+.av-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:1.5rem;text-align:center}
+.av-icon{font-size:28px;margin-bottom:.75rem}
+.av-title{font-weight:600;font-size:15px;margin-bottom:6px}
+.av-desc{font-size:13px;color:var(--text-muted);line-height:1.55}
+
+/* UNIV SECTION */
+.univ-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+.univ-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:1.25rem;display:flex;align-items:center;gap:1rem;cursor:pointer;transition:border-color .2s}
+.univ-card:hover{border-color:var(--blue-light)}
+.univ-logo{width:48px;height:48px;border-radius:12px;background:var(--blue-pale);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.univ-name{font-weight:600;font-size:14px;margin-bottom:2px}
+.univ-count{font-size:12px;color:var(--blue-light);font-weight:500}
+
+/* BAILLEUR FORM */
+.form-wrap{max-width:720px;margin:0 auto}
+.form-steps{display:flex;gap:0;margin-bottom:2rem;align-items:center}
+.fs-dot{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;transition:all .3s;cursor:pointer;border:2px solid transparent}
+.fs-dot.done{background:var(--teal);color:#fff;border-color:var(--teal)}
+.fs-dot.active{background:var(--white);color:var(--teal);border-color:var(--teal)}
+.fs-dot.pending{background:var(--white);color:var(--text-muted);border-color:var(--border)}
+.fs-line{flex:1;height:2px;background:var(--border);transition:background .3s}
+.fs-line.done{background:var(--teal)}
+.form-labels{display:flex;justify-content:space-between;margin-bottom:2rem}
+.form-lbl{font-size:11px;color:var(--text-muted);text-align:center;flex:1}
+.form-lbl.active{color:var(--teal);font-weight:600}
+.form-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:1.75rem;margin-bottom:1rem}
+.form-title{font-family:'Syne',sans-serif;font-size:19px;font-weight:700;margin-bottom:4px}
+.form-sub{font-size:13px;color:var(--text-muted);margin-bottom:1.5rem}
+.field{margin-bottom:1.1rem}
+.field label{font-size:13px;font-weight:500;margin-bottom:6px;display:block}
+.field label span{color:var(--blue-light)}
+.field input,.field select,.field textarea{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .2s;background:var(--white);color:var(--text)}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--teal)}
+.field textarea{resize:vertical;min-height:90px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.amenities{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.am{padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--text-muted);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;transition:all .2s}
+.am.sel{background:var(--teal-pale);color:#085041;border-color:var(--teal)}
+.upload-zone{border:2px dashed var(--border);border-radius:12px;padding:2.5rem;text-align:center;cursor:pointer;color:var(--text-muted);font-size:13px;transition:all .2s;margin-top:6px}
+.upload-zone:hover{border-color:var(--teal);color:var(--teal)}
+.upload-icon{font-size:32px;margin-bottom:8px}
+.form-nav{display:flex;justify-content:space-between;align-items:center}
+.btn-prev{background:transparent;color:var(--text-muted);border:1px solid var(--border);border-radius:30px;padding:10px 22px;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.btn-prev:hover{border-color:var(--teal);color:var(--teal)}
+.btn-next-t{background:var(--teal);color:#fff;border:none;border-radius:30px;padding:10px 28px;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s}
+.btn-next-t:hover{background:#0F6E56}
+.preview-row{display:flex;justify-content:space-between;font-size:14px;padding:8px 0;border-bottom:1px solid var(--border)}
+.preview-row:last-child{border:none}
+.preview-row strong{font-weight:600}
+
+/* TIPS */
+.tip-box{background:var(--teal-pale);border:1px solid #9FE1CB;border-radius:12px;padding:1rem 1.25rem;margin-top:1rem}
+.tip-title{font-size:13px;font-weight:600;color:#085041;margin-bottom:6px}
+.tip-list{font-size:12px;color:#0F6E56;line-height:1.8}
+
+/* TESTIMONIALS */
+.testi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem}
+.testi{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:1.25rem}
+.testi-stars{color:#EF9F27;font-size:13px;margin-bottom:.5rem}
+.testi-text{font-size:13px;color:var(--text-muted);line-height:1.65;margin-bottom:.75rem;font-style:italic}
+.testi-author{display:flex;align-items:center;gap:10px}
+.testi-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--white)}
+.av-blue{background:var(--blue)}
+.av-teal{background:var(--teal)}
+.av-coral{background:var(--coral)}
+.testi-name{font-size:13px;font-weight:600}
+.testi-role{font-size:11px;color:var(--text-muted)}
+
+/* CTA BAND */
+.cta-band{border-radius:20px;padding:2.5rem 2rem;text-align:center;margin:2rem 0}
+.cta-blue{background:linear-gradient(135deg,var(--blue-dark),var(--blue-light))}
+.cta-teal{background:linear-gradient(135deg,#04342C,var(--teal))}
+.cta-band h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;margin-bottom:8px}
+.cta-band p{color:rgba(255,255,255,0.8);font-size:14px;margin-bottom:1.5rem}
+.cta-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-w{background:#fff;border:none;border-radius:30px;padding:11px 24px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .2s}
+.btn-w.blue{color:var(--blue-dark)}
+.btn-w.teal{color:#04342C}
+.btn-w:hover{opacity:.9}
+.btn-out{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,0.5);border-radius:30px;padding:10px 22px;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:border-color .2s}
+.btn-out:hover{border-color:#fff}
+
+/* FOOTER */
+footer{background:var(--blue-dark);color:rgba(255,255,255,0.7);padding:2rem;text-align:center;font-size:13px}
+footer .footer-logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#fff;margin-bottom:.5rem}
+footer .footer-logo span{color:#85B7EB}
+footer a{color:rgba(255,255,255,0.6);text-decoration:none;margin:0 8px}
+footer a:hover{color:#fff}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:20px;padding:2rem;max-width:480px;width:100%;max-height:90vh;overflow-y:auto}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
+.modal-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted)}
+.modal-img{height:140px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:56px;margin-bottom:1.25rem}
+.modal-price{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--blue-dark);margin-bottom:4px}
+.modal-loc{font-size:13px;color:var(--text-muted);margin-bottom:1rem}
+.modal-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+.modal-desc{font-size:13px;color:var(--text-muted);line-height:1.7;margin-bottom:1.25rem}
+.contact-form .field label{font-size:12px}
+.contact-form .field input,.contact-form .field textarea{font-size:13px}
+.btn-send{width:100%;background:var(--blue-dark);color:#fff;border:none;border-radius:12px;padding:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s}
+.btn-send:hover{background:var(--blue-light)}
+.success-msg{text-align:center;padding:1.5rem;display:none}
+.success-msg .si{font-size:48px;margin-bottom:.75rem}
+.success-msg h3{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:.5rem}
+.success-msg p{font-size:13px;color:var(--text-muted)}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .nav-tabs{gap:3px}.tab-btn{padding:7px 12px;font-size:13px}
+  .row2{grid-template-columns:1fr}
+  .nav-cta{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="#">DAR<span>I</span> <span style="font-size:13px;font-weight:400;color:var(--text-muted)">Oujda</span></a>
+    <div class="nav-tabs">
+      <button class="tab-btn student active" onclick="showPage('student')">🎓 Étudiants</button>
+      <button class="tab-btn landlord" onclick="showPage('landlord')">🏠 Bailleurs</button>
+    </div>
+    <button class="nav-cta" onclick="showPage('landlord')">Publier une annonce</button>
+  </div>
+</nav>
+
+<!-- =================== PAGE ÉTUDIANTS =================== -->
+<div class="page active" id="page-student">
+
+  <!-- HERO -->
+  <div class="hero-student">
+    <div class="hero-tag">📍 Oujda — Logement étudiant</div>
+    <h1 class="hero-title">Votre logement à Oujda,<br><em>trouvé en quelques clics</em></h1>
+    <p class="hero-sub">Studios, chambres et colocations dans tous les quartiers d'Oujda.</p>
+    <div class="search-box">
+      <select id="s-type">
+        <option value="">Tous types</option>
+        <option>Studio</option>
+        <option>Chambre</option>
+        <option>Colocation</option>
+        <option>Appartement</option>
+      </select>
+      <span style="color:#ddd">|</span>
+      <input type="text" id="s-q" placeholder="Quartier, prix..." />
+      <button onclick="filterCards()">Rechercher</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-n">124</div><div class="stat-l">Logements disponibles</div></div>
+      <div class="stat"><div class="stat-n">4</div><div class="stat-l">Universités couvertes</div></div>
+      <div class="stat"><div class="stat-n">800+</div><div class="stat-l">Étudiants logés</div></div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- UNIVERSITÉS -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title">Chercher par quartier</div>
+      </div>
+      <div class="univ-grid">
+        <div class="univ-card" onclick="filterByUniv('Hay Salam')">
+          <div class="univ-logo">🏘️</div>
+          <div><div class="univ-name">Hay Salam</div><div class="univ-count">32 logements</div></div>
+        </div>
+        <div class="univ-card" onclick="filterByUniv('Al Qods')">
+          <div class="univ-logo">🏙️</div>
+          <div><div class="univ-name">Al Qods</div><div class="univ-count">24 logements</div></div>
+        </div>
+        <div class="univ-card" onclick="filterByUniv('Boaarfa')">
+          <div class="univ-logo">🏡</div>
+          <div><div class="univ-name">Boaarfa</div><div class="univ-count">18 logements</div></div>
+        </div>
+        <div class="univ-card" onclick="filterByUniv('Centre-ville')">
+          <div class="univ-logo">🏢</div>
+          <div><div class="univ-name">Centre-ville</div><div class="univ-count">21 logements</div></div>
+        </div>
+        <div class="univ-card" onclick="filterByUniv('Boudir')">
+          <div class="univ-logo">🌆</div>
+          <div><div class="univ-name">Boudir</div><div class="univ-count">15 logements</div></div>
+        </div>
+        <div class="univ-card" onclick="filterByUniv('Nassim')">
+          <div class="univ-logo">🌳</div>
+          <div><div class="univ-name">Nassim</div><div class="univ-count">14 logements</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOGEMENTS -->
+    <div class="section" style="padding-top:0">
+      <div class="section-head">
+        <div class="section-title">Logements disponibles</div>
+        <span id="count-label" style="font-size:13px;color:var(--text-muted)">6 annonces</span>
+      </div>
+      <div class="filters">
+        <button class="f-btn active" onclick="setFilter(this,'')">Tous</button>
+        <button class="f-btn" onclick="setFilter(this,'Studio')">Studio</button>
+        <button class="f-btn" onclick="setFilter(this,'Chambre')">Chambre</button>
+        <button class="f-btn" onclick="setFilter(this,'Colocation')">Colocation</button>
+        <button class="f-btn" onclick="setFilter(this,'Appartement')">Appartement</button>
+        <button class="f-btn" onclick="setFilter(this,'Meublé')">Meublé</button>
+      </div>
+      <div class="cards-grid" id="cards-grid">
+        <!-- Generated by JS -->
+      </div>
+    </div>
+
+    <!-- AVANTAGES -->
+    <div class="section">
+      <div class="section-title" style="margin-bottom:1rem">Pourquoi DARI ?</div>
+      <div class="av-grid">
+        <div class="av-card"><div class="av-icon">🔍</div><div class="av-title">Annonces vérifiées</div><div class="av-desc">Chaque logement est visité et contrôlé avant publication</div></div>
+        <div class="av-card"><div class="av-icon">⚡</div><div class="av-title">Contact direct</div><div class="av-desc">Contactez le bailleur directement, sans intermédiaire</div></div>
+        <div class="av-card"><div class="av-icon">💰</div><div class="av-title">Budgets étudiants</div><div class="av-desc">Des offres à partir de 600 DH/mois adaptées à vos moyens</div></div>
+        <div class="av-card"><div class="av-icon">🗺️</div><div class="av-title">Quartiers sûrs</div><div class="av-desc">Tous les logements sont dans des quartiers recommandés aux étudiants</div></div>
+      </div>
+    </div>
+
+    <!-- TÉMOIGNAGES -->
+    <div class="section" style="padding-top:0">
+      <div class="section-title" style="margin-bottom:1rem">Ce que disent nos étudiants</div>
+      <div class="testi-grid">
+        <div class="testi">
+          <div class="testi-stars">★★★★★</div>
+          <div class="testi-text">J'ai trouvé mon studio en 2 jours. Le bailleur était très sympa et le logement correspondait exactement aux photos.</div>
+          <div class="testi-author"><div class="testi-avatar av-blue">YB</div><div><div class="testi-name">Youssef B.</div><div class="testi-role">Étudiant ENCGO, 2ème année</div></div></div>
+        </div>
+        <div class="testi">
+          <div class="testi-stars">★★★★★</div>
+          <div class="testi-text">DARI m'a sauvé ! Je venais de Nador et je ne connaissais pas Oujda. Le service est rapide et les prix honnêtes.</div>
+          <div class="testi-author"><div class="testi-avatar av-teal">SC</div><div><div class="testi-name">Sara C.</div><div class="testi-role">Étudiante UMP, Master 1</div></div></div>
+        </div>
+        <div class="testi">
+          <div class="testi-stars">★★★★☆</div>
+          <div class="testi-text">Très bonne plateforme. La colocation que j'ai trouvée est parfaite. Je recommande à tous les étudiants d'Oujda.</div>
+          <div class="testi-author"><div class="testi-avatar av-coral">KM</div><div><div class="testi-name">Karim M.</div><div class="testi-role">Étudiant FSJES, Licence 3</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-band cta-blue">
+      <h2>Vous êtes bailleur à Oujda ?</h2>
+      <p>Publiez votre annonce gratuitement et trouvez un locataire étudiant fiable en moins de 48h.</p>
+      <div class="cta-btns">
+        <button class="btn-w blue" onclick="showPage('landlord')">Publier une annonce gratuite</button>
+        <button class="btn-out" onclick="showPage('landlord')">En savoir plus</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =================== PAGE BAILLEURS =================== -->
+<div class="page" id="page-landlord">
+
+  <div class="hero-landlord">
+    <div class="hero-tag" style="background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9)">🏠 Espace Bailleurs — Oujda</div>
+    <h1 class="hero-title" style="color:#fff">Louez votre bien à des<br><em style="color:#9FE1CB;font-style:normal">étudiants sérieux</em></h1>
+    <p class="hero-sub" style="color:rgba(255,255,255,0.8)">Publication gratuite. Vérification des locataires. Contact direct. Zéro commission.</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-n">800+</div><div class="stat-l">Étudiants inscrits</div></div>
+      <div class="stat"><div class="stat-n">48h</div><div class="stat-l">Délai moyen de location</div></div>
+      <div class="stat"><div class="stat-n">0 DH</div><div class="stat-l">Commission</div></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="section">
+      <div class="section-title" style="margin-bottom:1rem">Comment ça fonctionne ?</div>
+      <div class="av-grid">
+        <div class="av-card"><div class="av-icon">📝</div><div class="av-title">1. Publiez</div><div class="av-desc">Remplissez le formulaire avec les infos et photos de votre bien</div></div>
+        <div class="av-card"><div class="av-icon">✅</div><div class="av-title">2. Validation</div><div class="av-desc">Notre équipe vérifie votre annonce sous 24h et la publie</div></div>
+        <div class="av-card"><div class="av-icon">📩</div><div class="av-title">3. Recevez</div><div class="av-desc">Les étudiants intéressés vous contactent directement</div></div>
+        <div class="av-card"><div class="av-icon">🤝</div><div class="av-title">4. Louez</div><div class="av-desc">Choisissez votre locataire et signez le contrat</div></div>
+      </div>
+    </div>
+
+    <!-- FORMULAIRE MULTI-ÉTAPES -->
+    <div class="section" style="padding-top:0">
+      <div class="section-title" style="margin-bottom:1.5rem">Publier une annonce</div>
+      <div class="form-wrap">
+        <div class="form-steps">
+          <div class="fs-dot active" id="fd0">1</div>
+          <div class="fs-line" id="fl0"></div>
+          <div class="fs-dot pending" id="fd1">2</div>
+          <div class="fs-line" id="fl1"></div>
+          <div class="fs-dot pending" id="fd2">3</div>
+          <div class="fs-line" id="fl2"></div>
+          <div class="fs-dot pending" id="fd3">4</div>
+        </div>
+        <div class="form-labels">
+          <div class="form-lbl active" id="fl-lbl0">Infos</div>
+          <div class="form-lbl" id="fl-lbl1">Détails</div>
+          <div class="form-lbl" id="fl-lbl2">Photos</div>
+          <div class="form-lbl" id="fl-lbl3">Aperçu</div>
+        </div>
+
+        <!-- STEP 0 -->
+        <div class="form-card" id="fs0">
+          <div class="form-title">Informations générales</div>
+          <div class="form-sub">Décrivez votre logement à Oujda</div>
+          <div class="field"><label>Titre de l'annonce <span>*</span></label><input id="f-titre" type="text" placeholder="Ex : Studio meublé proche ENCGO — Hay Salam"/></div>
+          <div class="row2">
+            <div class="field"><label>Type de logement <span>*</span></label>
+              <select id="f-type"><option>Studio</option><option>Chambre seule</option><option>Colocation</option><option>Appartement</option></select>
+            </div>
+            <div class="field"><label>Quartier <span>*</span></label>
+              <select id="f-quartier2"><option>Hay Salam</option><option>Al Qods</option><option>Boaarfa</option><option>Centre-ville</option><option>Boudir</option><option>Nassim</option><option>Lazaret</option><option>Autre</option></select>
+            </div>
+          </div>
+          <div class="field"><label>Université la plus proche (optionnel)</label>
+            <select id="f-univ"><option>UMP</option><option>ENCGO</option><option>ESTO</option><option>FSJES</option><option>ENSA</option><option>Autre</option></select>
+          </div>
+          <div class="field"><label>Description</label><textarea id="f-desc" placeholder="Décrivez l'ambiance, l'environnement, les transports à proximité..."></textarea></div>
+        </div>
+
+        <!-- STEP 1 -->
+        <div class="form-card" id="fs1" style="display:none">
+          <div class="form-title">Détails & équipements</div>
+          <div class="form-sub">Loyer, surface et commodités incluses</div>
+          <div class="row2">
+            <div class="field"><label>Loyer mensuel (DH) <span>*</span></label><input id="f-prix" type="number" placeholder="Ex : 1200"/></div>
+            <div class="field"><label>Surface (m²)</label><input id="f-surface" type="number" placeholder="Ex : 25"/></div>
+          </div>
+          <div class="field"><label>Équipements inclus</label>
+            <div class="amenities">
+              <button class="am" onclick="this.classList.toggle('sel')">Wi-Fi</button>
+              <button class="am" onclick="this.classList.toggle('sel')">Meublé</button>
+              <button class="am" onclick="this.classList.toggle('sel')">Cuisine</button>
+              <button class="am" onclick="this.classList.toggle('sel')">Salle de bain privée</button>
+              <button class="am" onclick="this.classList.toggle('sel')">Eau chaude</button>
+              <button class="am" onclick="this.classList.toggle('sel')">Climatisation</button>
+              <button class="am" onclick="this.classList.toggle('sel')">Parking</button>
+              <button class="am" onclick="this.classList.toggle('sel')">Balcon</button>
+              <button class="am" onclick="this.classList.toggle('sel')">Gardien</button>
+              <button class="am" onclick="this.classList.toggle('sel')">Charges incluses</button>
+            </div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Caution (DH)</label><input id="f-caution" type="number" placeholder="Ex : 2400"/></div>
+            <div class="field"><label>Disponible à partir de</label><input id="f-dispo" type="date"/></div>
+          </div>
+          <div class="field"><label>Votre téléphone <span>*</span></label><input id="f-tel" type="tel" placeholder="06 XX XX XX XX"/></div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="form-card" id="fs2" style="display:none">
+          <div class="form-title">Photos du logement</div>
+          <div class="form-sub">Des photos de qualité multiplient les contacts par 3</div>
+          <div class="upload-zone" id="upload-zone">
+            <div class="upload-icon">📷</div>
+            <div style="font-weight:500;margin-bottom:4px">Cliquez pour ajouter des photos</div>
+            <div style="font-size:12px">JPG, PNG · max 5 Mo · jusqu'à 6 photos</div>
+          </div>
+          <input type="file" id="file-input" multiple accept="image/*" style="display:none" onchange="previewPhotos(event)"/>
+          <div id="photo-preview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"></div>
+          <div class="tip-box">
+            <div class="tip-title">💡 Conseils photo</div>
+            <div class="tip-list">
+              • Prenez en journée avec lumière naturelle<br>
+              • Montrez toutes les pièces (chambre, bain, cuisine)<br>
+              • Rangez et nettoyez avant de photographier<br>
+              • Photo de l'extérieur du bâtiment recommandée
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="form-card" id="fs3" style="display:none">
+          <div class="form-title">Aperçu de votre annonce</div>
+          <div class="form-sub">Vérifiez avant de publier</div>
+          <div id="preview-content"></div>
+          <div class="tip-box" style="margin-top:1rem;background:#E6F1FB;border-color:#B5D4F4">
+            <div class="tip-title" style="color:var(--blue-dark)">📋 Prochaines étapes</div>
+            <div class="tip-list" style="color:var(--blue)">
+              • Votre annonce sera examinée sous <strong>24h</strong><br>
+              • Vous recevrez une confirmation par SMS<br>
+              • Publication gratuite, aucune commission
+            </div>
+          </div>
+        </div>
+
+        <!-- SUCCESS -->
+        <div class="success-msg" id="success-msg">
+          <div class="si">🎉</div>
+          <h3>Annonce soumise avec succès !</h3>
+          <p>Notre équipe va examiner votre annonce dans les <strong>24 heures</strong>.<br>Vous recevrez une confirmation par SMS dès qu'elle sera publiée.</p>
+          <button class="btn-next-t" style="margin-top:1.25rem" onclick="resetForm()">Publier une autre annonce</button>
+        </div>
+
+        <div class="form-nav" id="form-nav">
+          <button class="btn-prev" id="bp" style="visibility:hidden" onclick="prevFS()">← Retour</button>
+          <button class="btn-next-t" id="bn" onclick="nextFS()">Continuer →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEMOIGNAGES BAILLEURS -->
+    <div class="section" style="padding-top:0">
+      <div class="section-title" style="margin-bottom:1rem">Ce que disent nos bailleurs</div>
+      <div class="testi-grid">
+        <div class="testi">
+          <div class="testi-stars">★★★★★</div>
+          <div class="testi-text">Mon appartement a été loué en 3 jours. Les étudiants sont sérieux et respectueux. Je recommande vivement DARI.</div>
+          <div class="testi-author"><div class="testi-avatar av-teal">HR</div><div><div class="testi-name">Hassan R.</div><div class="testi-role">Propriétaire — Hay Salam</div></div></div>
+        </div>
+        <div class="testi">
+          <div class="testi-stars">★★★★★</div>
+          <div class="testi-text">Service gratuit et efficace. Bien meilleur que les groupes Facebook où on perd du temps avec des faux profils.</div>
+          <div class="testi-author"><div class="testi-avatar av-blue">FO</div><div><div class="testi-name">Fatima O.</div><div class="testi-role">Propriétaire — Centre-ville</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-band cta-teal">
+      <h2>Des questions ?</h2>
+      <p>Notre équipe à Oujda vous répond 7j/7 de 8h à 20h.</p>
+      <div class="cta-btns">
+        <button class="btn-w teal" onclick="alert('WhatsApp: +212 6XX XXX XXX')">WhatsApp</button>
+        <button class="btn-out" onclick="alert('Email: contact@dari.ma')">Email</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">DAR<span>I</span> Oujda</div>
+  <p style="margin-bottom:.75rem;font-size:12px">La plateforme de logement étudiant dédiée à Oujda</p>
+  <div>
+    <a href="#">Accueil</a>
+    <a href="#">Logements</a>
+    <a href="#">Publier</a>
+    <a href="#">Contact</a>
+    <a href="#">Mentions légales</a>
+  </div>
+  <p style="margin-top:1rem;font-size:11px;opacity:.5">© 2026 DARI · Tous droits réservés</p>
+</footer>
+
+<!-- MODAL CONTACT -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-box">
+    <div class="modal-head">
+      <div class="modal-title" id="modal-title">Contacter le bailleur</div>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-img img-blue" id="modal-img">🏠</div>
+    <div class="modal-price" id="modal-price">— DH/mois</div>
+    <div class="modal-loc" id="modal-loc">📍 Oujda</div>
+    <div class="modal-tags" id="modal-tags"></div>
+    <div class="modal-desc" id="modal-desc"></div>
+    <div class="contact-form" id="contact-form">
+      <div class="field"><label>Votre nom</label><input type="text" placeholder="Votre nom complet"/></div>
+      <div class="field"><label>Téléphone</label><input type="tel" placeholder="06 XX XX XX XX"/></div>
+      <div class="field"><label>Message</label><textarea placeholder="Bonjour, je suis intéressé(e) par votre logement..."></textarea></div>
+      <button class="btn-send" onclick="sendContact()">Envoyer ma demande</button>
+    </div>
+    <div class="success-msg" id="modal-success">
+      <div class="si">✅</div>
+      <h3>Message envoyé !</h3>
+      <p>Le bailleur vous répondra sous 24h.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// DATA
+const listings = [
+  {id:1,type:'Studio',name:'Studio meublé lumineux',loc:'Hay Salam',univ:'Hay Salam',prix:1400,surface:22,tags:['Wi-Fi','Meublé','Cuisine'],img:'img-blue',emoji:'🏠',badge:'Coup de ♥',badgeClass:'badge-coral',desc:'Beau studio meublé au 2ème étage, très lumineux. Toutes charges incluses.'},
+  {id:2,type:'Chambre',name:'Chambre chez l\'habitant',loc:'Centre-ville',univ:'Centre-ville',prix:700,surface:14,tags:['Wi-Fi','Eau chaude'],img:'img-teal',emoji:'🛏️',badge:'Pas cher',badgeClass:'badge-teal',desc:'Chambre calme et propre dans un appartement familial. Accès cuisine partagée. Idéal pour étudiante.'},
+  {id:3,type:'Colocation',name:'Colocation 3 chambres',loc:'Boudir',univ:'Boudir',prix:900,surface:18,tags:['Wi-Fi','Meublé','Balcon'],img:'img-coral',emoji:'👥',badge:'Nouveau',badgeClass:'badge-new',desc:'Belle colocation dans un appartement rénové. Chambre privée, espaces communs spacieux.'},
+  {id:4,type:'Studio',name:'Studio Al Qods',loc:'Al Qods',univ:'Al Qods',prix:1100,surface:20,tags:['Meublé','Climatisation'],img:'img-amber',emoji:'🏡',badge:'Disponible',badgeClass:'badge-blue',desc:'Studio indépendant au rez-de-chaussée, avec entrée privée.'},
+  {id:5,type:'Appartement',name:'Appartement F2 meublé',loc:'Nassim',univ:'Nassim',prix:2200,surface:55,tags:['Wi-Fi','Meublé','Parking','Gardien'],img:'img-blue',emoji:'🏢',badge:'Premium',badgeClass:'badge-blue',desc:'Bel appartement F2 dans une résidence sécurisée. Convient à un couple d\'étudiants.'},
+  {id:6,type:'Chambre',name:'Chambre en résidence',loc:'Hay Salam',univ:'Hay Salam',prix:800,surface:16,tags:['Wi-Fi','Charges incluses'],img:'img-teal',emoji:'🏨',badge:'Populaire',badgeClass:'badge-teal',desc:'Résidence étudiante avec gardien 24h. Chambre individuelle avec salle d\'eau. Ambiance conviviale.'},
+];
+
+let activeFilter = '';
+function renderCards(data){
+  const g=document.getElementById('cards-grid');
+  document.getElementById('count-label').textContent=data.length+' annonce'+(data.length>1?'s':'');
+  g.innerHTML=data.map(l=>`
+    <div class="card" onclick="openModal(${l.id})">
+      <div class="card-img ${l.img}">${l.emoji}
+        <div class="badge ${l.badgeClass}">${l.badge}</div>
+        <div class="badge-fav">♡</div>
+      </div>
+      <div class="card-body">
+        <div class="card-type">${l.type}</div>
+        <div class="card-name">${l.name}</div>
+        <div class="card-loc">📍 ${l.loc}</div>
+        <div class="card-price">${l.prix.toLocaleString()} DH<small>/mois</small></div>
+        <div class="card-tags">${l.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      </div>
+      <div class="card-footer">
+        <button class="btn-contact" onclick="event.stopPropagation();openModal(${l.id})">Contacter</button>
+        <div class="rating">★ 4.8 · ${l.surface} m²</div>
+      </div>
+    </div>`).join('');
+}
+renderCards(listings);
+
+function setFilter(btn,type){
+  document.querySelectorAll('.f-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  activeFilter=type;
+  const q=document.getElementById('s-q').value.toLowerCase();
+  filterCards();
+}
+function filterCards(){
+  const q=document.getElementById('s-q').value.toLowerCase();
+  const t=document.getElementById('s-type').value;
+  let res=listings.filter(l=>{
+    const matchQ=!q||l.name.toLowerCase().includes(q)||l.loc.toLowerCase().includes(q)||l.univ.toLowerCase().includes(q);
+    const matchT=!t||l.type===t;
+    const matchF=!activeFilter||l.type===activeFilter||l.tags.includes(activeFilter);
+    return matchQ&&matchT&&matchF;
+  });
+  renderCards(res);
+}
+function filterByUniv(u){
+  document.getElementById('s-q').value=u;
+  filterCards();
+  document.querySelector('.cards-grid').scrollIntoView({behavior:'smooth'});
+}
+
+// MODAL
+function openModal(id){
+  const l=listings.find(x=>x.id===id);
+  document.getElementById('modal-title').textContent=l.name;
+  document.getElementById('modal-img').className='modal-img '+l.img;
+  document.getElementById('modal-img').textContent=l.emoji;
+  document.getElementById('modal-price').textContent=l.prix.toLocaleString()+' DH/mois';
+  document.getElementById('modal-loc').textContent='📍 '+l.loc+' · '+l.surface+' m²';
+  document.getElementById('modal-tags').innerHTML=l.tags.map(t=>`<span class="tag">${t}</span>`).join('');
+  document.getElementById('modal-desc').textContent=l.desc;
+  document.getElementById('contact-form').style.display='block';
+  document.getElementById('modal-success').style.display='none';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(e){if(e.target===document.getElementById('modal-overlay'))closeModalDirect();}
+function closeModalDirect(){document.getElementById('modal-overlay').classList.remove('open');}
+function sendContact(){
+  document.getElementById('contact-form').style.display='none';
+  document.getElementById('modal-success').style.display='block';
+}
+
+// PAGE SWITCH
+function showPage(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.querySelector('.tab-btn.'+p).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// FORM BAILLEUR
+let fStep=0;
+function updateFS(){
+  for(let i=0;i<4;i++){
+    const dot=document.getElementById('fd'+i);
+    const lbl=document.getElementById('fl-lbl'+i);
+    const step=document.getElementById('fs'+i);
+    const line=document.getElementById('fl'+i);
+    if(step)step.style.display=i===fStep?'block':'none';
+    dot.className='fs-dot '+(i<fStep?'done':i===fStep?'active':'pending');
+    dot.textContent=i<fStep?'✓':(i+1);
+    if(lbl)lbl.className='form-lbl'+(i===fStep?' active':'');
+    if(line)line.className='fs-line'+(i<fStep?' done':'');
+  }
+  document.getElementById('bp').style.visibility=fStep===0?'hidden':'visible';
+  document.getElementById('bn').textContent=fStep===3?'Publier l\'annonce →':'Continuer →';
+}
+function nextFS(){
+  if(fStep===3){submitForm();return;}
+  if(fStep===2){buildPreview();}
+  if(fStep<3){fStep++;updateFS();}
+}
+function prevFS(){if(fStep>0){fStep--;updateFS();}}
+function buildPreview(){
+  const titre=document.getElementById('f-titre').value||'—';
+  const type=document.getElementById('f-type').value;
+  const quartier=document.getElementById('f-quartier').value;
+  const univ=document.getElementById('f-univ').value;
+  const prix=document.getElementById('f-prix').value;
+  const surface=document.getElementById('f-surface').value;
+  const tel=document.getElementById('f-tel').value||'—';
+  document.getElementById('preview-content').innerHTML=`
+    <div style="background:var(--bg);border-radius:12px;padding:1rem">
+      ${[['Titre',titre],['Type',type],['Quartier',quartier],['Université proche',univ],['Loyer mensuel',prix?prix+' DH':'—'],['Surface',surface?surface+' m²':'—'],['Téléphone',tel]].map(([k,v])=>`<div class="preview-row"><span style="color:var(--text-muted)">${k}</span><strong>${v}</strong></div>`).join('')}
+    </div>`;
+}
+function submitForm(){
+  document.getElementById('form-nav').style.display='none';
+  for(let i=0;i<4;i++){const s=document.getElementById('fs'+i);if(s)s.style.display='none';}
+  document.getElementById('success-msg').style.display='block';
+}
+function resetForm(){
+  fStep=0;
+  document.getElementById('success-msg').style.display='none';
+  document.getElementById('form-nav').style.display='flex';
+  updateFS();
+}
+
+// PHOTO UPLOAD
+document.getElementById('upload-zone').onclick=()=>document.getElementById('file-input').click();
+function previewPhotos(e){
+  const prev=document.getElementById('photo-preview');
+  prev.innerHTML='';
+  Array.from(e.target.files).slice(0,6).forEach(f=>{
+    const url=URL.createObjectURL(f);
+    prev.innerHTML+=`<img src="${url}" style="width:80px;height:60px;object-fit:cover;border-radius:8px;border:1px solid var(--border)"/>`;
+  });
+}
+updateFS();
+</script>
+</body>
+</html>
